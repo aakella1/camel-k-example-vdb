@@ -65,23 +65,14 @@ _Status: unknown_{#dv-requirements-status}
 
 ## 1. Preparing a new OpenShift project
 
-We'll setup a new project called `camel-vdb` where we'll run the integrations.
+We start by creating a project to run AMQ Streams, Red Hat's data streaming platform based on Apache Kafka. Go to your working project, open a terminal tab and type the following command:
 
-To create the project, open a terminal tab and type the following command:
 
 ```
-oc new-project camel-vdb
+oc project userX
 ```
 
 ([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$oc%20new-project%20camel-vdb&completion=New%20project%20creation. "Opens a new terminal and sends the command above"){.didact})
-
-Upon successful creation, you should ensure that the Camel K operator is installed. We'll use the `kamel` CLI to do it:
-
-```
-kamel install
-```
-
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$kamel%20install&completion=Camel%20K%20operator%20installation. "Opens a new terminal and sends the command above"){.didact})
 
 Camel K should have created an IntegrationPlatform custom resource in your project. To verify it:
 
@@ -95,41 +86,8 @@ If everything is ok, you should see an IntegrationPlatform named `camel-k` with 
 
 **DV (Teiid) Operator**
 
-Apart from the support provided by the VS Code extension, and "kamel" you also need Data Virtualization (Teiid) Operator in order to deploy a Virtual Database. This operator needs to be installed from the OperatorHub.
 
-Before you can install the Operator, in order access the restricted Red Hat image repository, one needs to provide their credentials for [Red hat Portal]https://access.redhat.com by executing the following
-
-```
-oc create secret docker-registry dv-pull-secret \
-  --docker-server=registry.redhat.io \
-  --docker-username={CUSTOMER_PORTAL_USERNAME} \
-  --docker-password={CUSTOMER_PORTAL_PASSWORD}
-
-oc secrets link builder dv-pull-secret
-oc secrets link builder dv-pull-secret --for=pull
-```
-
-Replace {CUSTOMER_PORTAL_USERNAME} and {CUSTOMER_PORTAL_PASSWORD} with your own values and execute the commands. Make sure you provide the correct values, other wise next step of installation will fail.
-
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$echo%20%22%5Cn%5Cn%22%20%26%26echo%20%22Enter%20username%20for%20%27registry.redhat.io%27%20and%20press%20%5BENTER%5D%3A%20%22%20%26%26%20read%20username%20%26%26%20echo%20%22enter%20password%20for%20%27registry.redhat.io%27%20and%20press%20%5BENTER%5D%3A%20%22%20%26%26%20read%20-s%20password%20%26%26%20oc%20create%20secret%20docker-registry%20dv-pull-secret%20--docker-server%3Dregistry.redhat.io%20--docker-username%3D%24username%20--docker-password%3D%24password%20%26%26%20oc%20secrets%20link%20builder%20dv-pull-secret%20%26%26%20oc%20secrets%20link%20builder%20dv-pull-secret%20--for%3Dpull&completion=DV%20secret%20verification. "Opens a new terminal and sends the command above"){.didact})
-
-Now, go to your OpenShift 4.x WebConsole page, and find the OperatorHub menu item on left hand side menu and find and install "Data Virtualization Operator". This may take couple minutes to install.
-
-Now lets verify that the dv-operator is installed correctly
-
-```
-oc get pods --selector name=dv-operator
-```
-
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$oc%20get%20pods%20--selector%20name%3Ddv-operator&completion=DV%20K%20verification. "Opens a new terminal and sends the command `oc get pods --selector name=dv-operator`"){.didact})
-
-If everything is ok, you should see an Data Virtualization Operator pod below in terminal.
-
-[Check Data Virtualization is installed](didact://?commandId=vscode.didact.requirementCheck&text=dv-requirements-status-2$$oc%20get%20pods%20--selector%20name%3Ddv-operator$$dv-operator-&completion=Checking%20Data%20Virtualization%20is%20available%20on%20this%20system. "Tests to see if `oc get pods --selector name=dv-operator` returns a result"){.didact}
-
-_Status: unknown_{#dv-requirements-status-2}
-
-## 2. Deploy a Virtual Database
+## 1. Deploy a Virtual Database
 
 For the purposes of this example lets deploy a Virtual Database, that is built on top of in memory based H2 database for simplicity. This Virtual database will exposes a single table called `NOTE`, then DV will expose a OData API on it.
 
