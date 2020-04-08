@@ -69,10 +69,17 @@ We start by creating a project to run AMQ Streams, Red Hat's data streaming plat
 
 
 ```
-oc project userX
+oc project userX-lab-vdb
 ```
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$oc%20project%20userX-lab-vdb&completion=Use%20your%20namespace. "Opens a new terminal and sends the command above"){.didact})
 
-([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$oc%20new-project%20camel-vdb&completion=New%20project%20creation. "Opens a new terminal and sends the command above"){.didact})
+You should ensure that the Camel K operator is installed. We'll use the `kamel` CLI to do it:
+
+```
+kamel install --skip-operator-setup --skip-cluster-setup --trait-profile OpenShift
+```
+([^ execute](didact://?commandId=vscode.didact.sendNamedTerminalAString&text=camelTerm$$kamel%20install%20--skip-operator-setup%20--skip-cluster-setup%20--trait-profile%20OpenShift&completion=Camel%20K%20platform%20installation. "Opens a new terminal and sends the command above"){.didact})
+
 
 Camel K should have created an IntegrationPlatform custom resource in your project. To verify it:
 
@@ -111,7 +118,7 @@ oc get vdb dv-dispatch -o yaml
 
 This repository contains a simple Camel K integration that periodically reads and writes from the Virtual Database that is deployed above.
 
-The integration is all contained in a single file named `Vdb.java` ([open](didact://?commandId=vscode.openFolder&projectFilePath=Vdb.java&completion=Opened%20the%20Vdb.java%20file "Opens the Vdb.java file"){.didact}).
+The integration is all contained in a single file named `Vdb.java` ([open](didact://?commandId=vscode.openFolder&projectFilePath=../camel-k-example-vdb/Vdb.java&completion=Opened%20the%20Vdb.java%20file "Opens the Vdb.java file"){.didact}).
 
 > **Note:** the `Vdb.java` file contains a simple integration that uses the `timer` and `odata` components.
 > Dependency management is automatically handled by Camel K that imports all required libraries from the Camel
@@ -131,7 +138,7 @@ If everything is ok, after the build phase finishes, you should see the Camel in
 
 When running in dev mode, you can change the integration code and let Camel K redeploy the changes automatically.
 
-[**To exit dev mode and terminate the execution**, just click here](didact://?commandId=vscode.didact.sendNamedTerminalCtrlC&text=camelTerm&completion=Camel%20K%20basic%20integration%20interrupted. "Interrupt the current operation on the terminal"){.didact} 
+[**To exit dev mode and terminate the execution**, just click here](didact://?commandId=vscode.didact.sendNamedTerminalCtrlC&text=camelTerm&completion=Camel%20K%20basic%20integration%20interrupted. "Interrupt the current operation on the terminal"){.didact}
 or hit `ctrl+c` on the terminal window.
 
 > **Note:** When you terminate a "dev mode" execution, also the remote integration will be deleted. This gives the experience of a local program execution, but the integration is actually running in the remote cluster.
